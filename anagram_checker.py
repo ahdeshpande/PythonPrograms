@@ -11,7 +11,12 @@ def question1(s, t):
     if len(s) and len(t) > 0:
         # Create a dictionary where all the keys are the characters of the
         # string and value as 0
-        s_dict = dict.fromkeys(s, 0)
+        s_dict = {}
+        for letter in s:
+            if letter in s_dict.keys():
+                s_dict[letter] += 1
+            else:
+                s_dict[letter] = 1
 
         # Counter to check how many matches
         counter = 0
@@ -22,7 +27,9 @@ def question1(s, t):
         # repeated character
         for character in t:
             if character in s_dict.keys():
-                s_dict.pop(character)
+                s_dict[character] -= 1
+                if s_dict[character] == 0:
+                    s_dict.pop(character)
                 counter += 1
 
         # Check if counter is equal to the length of string 't'
@@ -70,6 +77,10 @@ t = "aa"
 print("s : " + s + "\t" + "t : " + t)
 print("Is anagram? " + str(question1(s, t)))
 
+s = "abhiraj"
+t = "aa"
+print("s : " + s + "\t" + "t : " + t)
+print("Is anagram? " + str(question1(s, t)))
 
 # Time Complexity: O(n)
 # Space Complexity: O(n)
