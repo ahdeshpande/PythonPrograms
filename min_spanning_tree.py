@@ -21,17 +21,33 @@ def question3(graph):
     # Sort all the edges on weights
     edges = sorted(edges, key=lambda x: x[2])
 
-    print(edges)
-
     # Start creating a MST
     min_spanning_tree = {}
 
+    # A forest consisting of trees with single nodes is initialized. Each
+    # tree is represented in a different number.
+    tree = {}
+    index = 1
+    for i in G.keys():
+        tree[i] = index
+        index += 1
+
     for edge in edges:
 
-        if edge[0] in min_spanning_tree.keys() and edge[1] in \
-                min_spanning_tree.keys():
-            pass
-        else:
+        # If this edge is connecting two vertices which belong to the same
+        # tree (having the same number), then it is ignored. Adding such an
+        # edge to the result would form a cycle.
+
+        if len(set(tree.values())) == 1:
+            break
+
+        elif tree[edge[0]] is not tree[edge[1]]:
+            value_list = [tree[edge[1]], tree[edge[0]]]
+            for key, value in tree.items():
+                if value in value_list:
+                    tree[key] = tree[edge[0]]
+
+            # Create an adjacency matrix
             if min_spanning_tree.get(edge[0]):
                 min_spanning_tree[edge[0]].append(tuple((edge[1], edge[2])))
             else:
@@ -45,11 +61,16 @@ def question3(graph):
     print(min_spanning_tree)
 
 
-G = {'A': [('B', 7), ('D', 5)],
-     'B': [('A', 7), ('C', 8), ('D', 9), ('E', 7)],
-     'C': [('B', 8), ('E', 5)],
-     'D': [('A', 5), ('B', 9), ('E', 15), ('F', 6)],
-     'E': [('B', 7), ('C', 5), ('D', 15), ('F', 8), ('G', 9)],
-     'F': [('D', 6), ('E', 8), ('G', 11)],
-     'G': [('E', 9), ('F', 11)]}
+# Algorithm and example referred from
+# https://www-m9.ma.tum.de/graph-algorithms/mst-kruskal/index_en.html
+G = {'A': [('I', 464), ('F', 343), ('H', 1435)],
+     'B': [('F', 879), ('H', 811), ('G', 954), ('J', 524)],
+     'C': [('F', 1054), ('E', 1364)],
+     'D': [('G', 433), ('J', 1053)],
+     'E': [('C', 1364), ('F', 1106), ('J', 766)],
+     'F': [('A', 343), ('G', 1054), ('B', 879), ('E', 1106)],
+     'G': [('H', 837), ('B', 954), ('D', 433)],
+     'H': [('A', 1435), ('B', 811), ('G', 837)],
+     'I': [('A', 464)],
+     'J': [('B', 524), ('D', 1053), ('E', 766)]}
 question3(G)
